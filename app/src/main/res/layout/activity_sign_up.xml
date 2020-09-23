@@ -17,13 +17,13 @@
         android:src="@mipmap/bulb_trans_login" />
 
     <TextView
-        android:id="@+id/welcomeText"
+        android:id="@+id/textWelcome"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:fontFamily="@font/bungee"
-        android:text="Hey there, Welcome Back"
-        android:textColor="#512DA8"
+        android:text="WELCOME"
         android:layout_marginLeft="20dp"
+        android:textColor="#512DA8"
         android:textSize="45sp" />
 
     <TextView
@@ -32,7 +32,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:fontFamily="@font/bevan"
-        android:text="Signin to continue"
+        android:text="SignUp for AutoLights Service"
         android:layout_marginLeft="20dp"
         android:textSize="18sp" />
 
@@ -47,7 +47,20 @@
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/username"
+            android:id="@+id/name"
+            android:hint="Full Name"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="text"/>
+
+        </com.google.android.material.textfield.TextInputLayout>
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/email"
             android:hint="Email"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
@@ -60,7 +73,7 @@
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/password"
+            android:id="@+id/passwordSignUp"
             app:passwordToggleEnabled="true"
             android:hint="Password"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
@@ -72,23 +85,13 @@
 
         </com.google.android.material.textfield.TextInputLayout>
 
-        <Button
-            android:id="@+id/btnForgot"
-            android:layout_width="200dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="right"
-            android:background="#00000000"
-            android:elevation="0dp"
-            android:text="Forgot Password?"
-            android:textColor="@color/colorPrimary"
-            android:layout_marginTop="5dp"
-            android:layout_marginBottom="5dp"/>
+
 
         <Button
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/bulb_trans_background"
-            android:text="Login"
+            android:text="Register"
             android:layout_marginTop="5dp"
             android:layout_marginBottom="5dp"/>
 
@@ -99,7 +102,7 @@
 
             android:background="#00000000"
             android:elevation="0dp"
-            android:text="New USer? Sign Up"
+            android:text="Already Have an Account? Login"
             android:textColor="#000000"
             android:layout_marginTop="5dp"
             android:layout_marginBottom="5dp"/>
