@@ -23,6 +23,7 @@
         android:fontFamily="@font/bungee"
         android:text="Hey there, Welcome Back"
         android:textColor="#512DA8"
+        android:transitionName="trans_welcome"
         android:layout_marginLeft="20dp"
         android:textSize="45sp" />
 
@@ -32,6 +33,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:fontFamily="@font/bevan"
+        android:transitionName="trans_signinText"
         android:text="Signin to continue"
         android:layout_marginLeft="20dp"
         android:textSize="18sp" />
@@ -49,6 +51,7 @@
             android:layout_height="wrap_content"
             android:id="@+id/username"
             android:hint="Email"
+            android:transitionName="trans_email"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
             <com.google.android.material.textfield.TextInputEditText
@@ -63,6 +66,7 @@
             android:id="@+id/password"
             app:passwordToggleEnabled="true"
             android:hint="Password"
+            android:transitionName="trans_password"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
             <com.google.android.material.textfield.TextInputEditText
@@ -85,10 +89,12 @@
             android:layout_marginBottom="5dp"/>
 
         <Button
+            android:id="@+id/btnLogin"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/bulb_trans_background"
             android:text="Login"
+            android:transitionName="trans_login"
             android:layout_marginTop="5dp"
             android:layout_marginBottom="5dp"/>
 
@@ -96,11 +102,11 @@
             android:id="@+id/btnSignUp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-
             android:background="#00000000"
             android:elevation="0dp"
-            android:text="New USer? Sign Up"
+            android:text="New User? Sign Up"
             android:textColor="#000000"
+            android:transitionName="trans_new_user"
             android:layout_marginTop="5dp"
             android:layout_marginBottom="5dp"/>
 

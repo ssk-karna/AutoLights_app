@@ -23,6 +23,7 @@
         android:fontFamily="@font/bungee"
         android:text="WELCOME"
         android:layout_marginLeft="20dp"
+        android:transitionName="trans_welcome"
         android:textColor="#512DA8"
         android:textSize="45sp" />
 
@@ -32,7 +33,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:fontFamily="@font/bevan"
-        android:text="SignUp for AutoLights Service"
+        android:text="SignUp for Our Services"
         android:layout_marginLeft="20dp"
         android:textSize="18sp" />
 
@@ -62,6 +63,7 @@
             android:layout_height="wrap_content"
             android:id="@+id/email"
             android:hint="Email"
+            android:transitionName="trans_email"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
             <com.google.android.material.textfield.TextInputEditText
@@ -73,9 +75,25 @@
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:id="@+id/phone"
+            android:hint="Phone No "
+            app:counterMaxLength="10"
+            android:transitionName="trans_phoneno"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="number"/>
+
+        </com.google.android.material.textfield.TextInputLayout>
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:id="@+id/passwordSignUp"
             app:passwordToggleEnabled="true"
             android:hint="Password"
+            android:transitionName="trans_password"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
             <com.google.android.material.textfield.TextInputEditText
@@ -86,24 +104,25 @@
         </com.google.android.material.textfield.TextInputLayout>
 
 
-
         <Button
+            android:id="@+id/btnRegister"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
             android:background="@color/bulb_trans_background"
             android:text="Register"
-            android:layout_marginTop="5dp"
-            android:layout_marginBottom="5dp"/>
+            android:transitionName="trans_login" />
 
         <Button
-            android:id="@+id/btnSignUp"
+            android:id="@+id/btnLoginPage"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-
             android:background="#00000000"
             android:elevation="0dp"
             android:text="Already Have an Account? Login"
             android:textColor="#000000"
+            android:transitionName="trans_new_user"
             android:layout_marginTop="5dp"
             android:layout_marginBottom="5dp"/>
 
