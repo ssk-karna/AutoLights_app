@@ -1,5 +1,6 @@
 package com.truedevelopment.autolight;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.ActivityOptions;
@@ -13,6 +14,12 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.android.material.textfield.TextInputLayout;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -60,5 +67,108 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    private Boolean validateUserName(){
+        String val = mUserId.getEditText().getText().toString();
+        String noWhiteSpace =  "(?=\\S+$)";    // 8-20 characters long
+
+        if(val.isEmpty()){
+            mUserId.setError("Field Cannot be Empty");
+            return false;
+        }
+        else
+        {
+            mUserId.setError(null);
+            mUserId.setErrorEnabled(false);
+            return true;
+
+        }
+    }
+
+    private Boolean validatePassword(){
+        String val = mPassword.getEditText().getText().toString();
+
+
+        if(val.isEmpty()){
+            mPassword.setError("Field Cannot be Empty");
+            return false;
+        }
+        else
+        {
+            mPassword.setError(null);
+            mPassword.setErrorEnabled(false);
+            return true;
+
+        }
+    }
+
+    public void loginUser(View view){
+
+        if(!validateUserName() | !validatePassword()){
+            return;
+        }
+
+        else{
+            isUser();
+        }
+
+    }
+
+    private void isUser() {
+
+        final String userEnteredUsername = mUserId.getEditText().getText().toString().trim();
+        final String userEnteredPassword = mPassword.getEditText().getText().toString().trim();
+
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("Users");
+
+        Query checkUser = reference.orderByChild("username").equalTo(userEnteredUsername);
+
+        checkUser.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()){
+
+                    mUserId.setError(null);
+                    mUserId.setErrorEnabled(false);
+
+
+                    String passwordFromDB = snapshot.child(userEnteredUsername).child("password").getValue(String.class);
+
+                    if(passwordFromDB.equals(userEnteredPassword)){
+
+                        mPassword.setError(null);
+                        mPassword.setErrorEnabled(false);
+
+                        String nameFromDB = snapshot.child(userEnteredUsername).child("name").getValue(String.class);
+                        String usernameFromDB = snapshot.child(userEnteredUsername).child("username").getValue(String.class);
+                        String emailFromDB = snapshot.child(userEnteredUsername).child("email").getValue(String.class);
+                        String phoneFromDB = snapshot.child(userEnteredUsername).child("phone").getValue(String.class);
+
+                        Intent intent = new Intent(getApplicationContext(),UserProfile.class);
+
+                        intent.putExtra("name",nameFromDB);
+                        intent.putExtra("username",usernameFromDB);
+                        intent.putExtra("email",emailFromDB);
+                        intent.putExtra("phone",phoneFromDB);
+                        intent.putExtra("password",passwordFromDB);
+
+                        startActivity(intent);
+                    }
+                    else{
+                        mPassword.setError("Wrong Password!");
+                        mPassword.requestFocus();
+                    }
+                }else {
+                    mUserId.setError("No Such User Exists!");
+                    mUserId.requestFocus();
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
     }
 }

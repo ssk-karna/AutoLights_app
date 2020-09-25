@@ -21,7 +21,7 @@ public class SignUp extends AppCompatActivity {
   FirebaseDatabase rootNode;
   DatabaseReference reference;
 
-  TextInputLayout regName, regMail,regPhone, regPassword;
+  TextInputLayout regName, regMail,regPhone, regPassword,regUserName;
   Button register,backToLogin;
   ImageView logoImg;
   TextView mWelcomeText, mSignInText;
@@ -35,6 +35,7 @@ public class SignUp extends AppCompatActivity {
         //FirebaseApp.initializeApp(this);
 
         regName = findViewById(R.id.name);
+        regUserName = findViewById(R.id.userName);
         regMail = findViewById(R.id.email);
         regPassword = findViewById(R.id.passwordSignUp);
         register = findViewById(R.id.btnRegister);
@@ -109,6 +110,7 @@ public class SignUp extends AppCompatActivity {
         else
         {
             regMail.setError(null);
+            regMail.setErrorEnabled(false);
             return true;
 
         }
@@ -124,6 +126,7 @@ public class SignUp extends AppCompatActivity {
         else
         {
             regPhone.setError(null);
+            regPhone.setErrorEnabled(false);
             return true;
 
         }
@@ -148,6 +151,32 @@ public class SignUp extends AppCompatActivity {
         else
         {
             regPassword.setError(null);
+            regPassword.setErrorEnabled(false);
+            return true;
+
+        }
+    }
+
+    private Boolean validateUserName(){
+        String val = regUserName.getEditText().getText().toString();
+        String noWhiteSpace =  "(?=\\S+$)";    // 8-20 characters long
+
+        if(val.isEmpty()){
+            regUserName.setError("Field Cannot be Empty");
+            return false;
+        }
+        else if(val.matches(noWhiteSpace)){
+            regUserName.setError("No white Spaces allowed!");
+            return false;
+        }
+        else if(val.length()>=15){
+            regUserName.setError("Too Long. Less than 15 Characters allowed!");
+            return false;
+        }
+        else
+        {
+            regUserName.setError(null);
+            regUserName.setErrorEnabled(false);
             return true;
 
         }
@@ -158,7 +187,7 @@ public class SignUp extends AppCompatActivity {
         rootNode = FirebaseDatabase.getInstance();
         reference  = rootNode.getReference().child("Users");
 
-        if(!validateName() | !validateEmail() | !validatePhone() | !validatePassword()){
+        if(!validateName() | !validateEmail() | !validatePhone() | !validatePassword() | !validateUserName()){
             return;
         }
 
@@ -166,11 +195,12 @@ public class SignUp extends AppCompatActivity {
         String email = regMail.getEditText().getText().toString();
         String phone = regPhone.getEditText().getText().toString();
         String password = regPassword.getEditText().getText().toString();
+        String username = regUserName.getEditText().getText().toString();
 
-        UserHelperClass helperClass = new UserHelperClass(name,email,phone,password);
+        UserHelperClass helperClass = new UserHelperClass(name,username,email,phone,password);
 
-        reference.child(phone).setValue(helperClass);
-        reference.child(phone).child("ProductsOwned").setValue("0");
+        reference.child(username).setValue(helperClass);
+        reference.child(username).child("ProductsOwned").setValue("0");
 
     }
 

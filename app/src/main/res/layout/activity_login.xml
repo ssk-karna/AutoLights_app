@@ -50,7 +50,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/username"
-            android:hint="Email"
+            android:hint="Username"
             android:transitionName="trans_email"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
@@ -92,11 +92,12 @@
             android:id="@+id/btnLogin"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/bulb_trans_background"
-            android:text="Login"
-            android:transitionName="trans_login"
             android:layout_marginTop="5dp"
-            android:layout_marginBottom="5dp"/>
+            android:layout_marginBottom="5dp"
+            android:background="@color/bulb_trans_background"
+            android:onClick="loginUser"
+            android:text="Login"
+            android:transitionName="trans_login" />
 
         <Button
             android:id="@+id/btnSignUp"
