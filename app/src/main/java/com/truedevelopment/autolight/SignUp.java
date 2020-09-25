@@ -2,9 +2,14 @@ package com.truedevelopment.autolight;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.ActivityOptions;
+import android.content.Intent;
 import android.os.Bundle;
+import android.util.Pair;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.FirebaseApp;
@@ -18,6 +23,8 @@ public class SignUp extends AppCompatActivity {
 
   TextInputLayout regName, regMail,regPhone, regPassword;
   Button register,backToLogin;
+  ImageView logoImg;
+  TextView mWelcomeText, mSignInText;
 
 
     @Override
@@ -33,11 +40,38 @@ public class SignUp extends AppCompatActivity {
         register = findViewById(R.id.btnRegister);
         regPhone = findViewById(R.id.phone);
         backToLogin = findViewById(R.id.btnLoginPage);
+        mSignInText = findViewById(R.id.textSignInText);
+        mWelcomeText = findViewById(R.id.textWelcomeText);
+        logoImg = findViewById(R.id.logoImg);
 
         register.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 registerUser(v);
+            }
+        });
+
+        backToLogin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Intent intent = new Intent(SignUp.this,LoginActivity.class);
+
+                Pair[] pairs = new Pair[7];
+
+                pairs[0] = new Pair<View,String>(logoImg,"logo_image");
+                pairs[1] = new Pair<View,String>(backToLogin,"trans_new_user");
+                pairs[2] = new Pair<View,String>(register,"trans_login");
+                pairs[3] = new Pair<View,String>(mWelcomeText,"trans_welcome");
+                pairs[4] = new Pair<View,String>(mSignInText,"trans_signinText");
+                pairs[5] = new Pair<View,String>(regMail,"trans_email");
+                pairs[6] = new Pair<View,String>(regPassword,"trans_password");
+
+                ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(SignUp.this,pairs);
+
+                startActivity(intent,options.toBundle());
+
+
             }
         });
 
@@ -136,6 +170,9 @@ public class SignUp extends AppCompatActivity {
         UserHelperClass helperClass = new UserHelperClass(name,email,phone,password);
 
         reference.child(phone).setValue(helperClass);
+        reference.child(phone).child("ProductsOwned").setValue("0");
 
     }
+
+
 }

@@ -21,6 +21,7 @@ public class LoginActivity extends AppCompatActivity {
     TextInputLayout mUserId, mPassword;
     ImageView logoImage;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

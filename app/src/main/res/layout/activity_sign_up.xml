@@ -9,7 +9,7 @@
     tools:context=".LoginActivity">
 
     <ImageView
-        android:id="@+id/logoImage"
+        android:id="@+id/logoImg"
         android:layout_width="142dp"
         android:layout_height="135dp"
         android:transitionName="logo_image"
@@ -17,7 +17,7 @@
         android:src="@mipmap/bulb_trans_login" />
 
     <TextView
-        android:id="@+id/textWelcome"
+        android:id="@+id/textWelcomeText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:fontFamily="@font/bungee"
@@ -28,7 +28,7 @@
         android:textSize="45sp" />
 
     <TextView
-        android:id="@+id/signInText"
+        android:id="@+id/textSignInText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
