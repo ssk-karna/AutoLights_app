@@ -50,12 +50,12 @@ public class UserProfile extends AppCompatActivity {
     }
 
     private void showAllUserData() {
-        Intent intent = getIntent();
-         user_name = intent.getStringExtra("name");
-         user_username = intent.getStringExtra("username");
-         user_email = intent.getStringExtra("email");
-         user_phone = intent.getStringExtra("phone");
-         user_password = intent.getStringExtra("password");
+        Intent UserIntent = getIntent();
+         user_name = UserIntent.getStringExtra("name");
+         user_username = UserIntent.getStringExtra("username");
+         user_email = UserIntent.getStringExtra("email");
+         user_phone = UserIntent.getStringExtra("phone");
+         user_password = UserIntent.getStringExtra("password");
 
       fullNameLabel.setText(user_name);
       userNameLabel.setText(user_username);

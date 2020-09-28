@@ -12,7 +12,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.android.material.textfield.TextInputLayout;
-import com.google.firebase.FirebaseApp;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -36,7 +35,7 @@ public class SignUp extends AppCompatActivity {
 
         regName = findViewById(R.id.name);
         regUserName = findViewById(R.id.userName);
-        regMail = findViewById(R.id.email);
+        regMail = findViewById(R.id.tvusername);
         regPassword = findViewById(R.id.passwordSignUp);
         register = findViewById(R.id.btnRegister);
         regPhone = findViewById(R.id.phone);
