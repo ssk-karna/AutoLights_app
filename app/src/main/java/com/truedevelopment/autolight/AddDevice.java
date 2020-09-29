@@ -25,7 +25,7 @@ public class AddDevice extends AppCompatActivity {
     TextInputLayout productID,productKey;
     TextView usertv,iduserEntered,idDb;
 
-    DatabaseReference reference_user;
+    DatabaseReference reference_user,reference_devices;
     int maxProductCount = 0;
 
 
@@ -47,7 +47,7 @@ public class AddDevice extends AppCompatActivity {
         idDb = findViewById(R.id.tvDbid);
 
         reference_user = FirebaseDatabase.getInstance().getReference().child("Users");
-
+        reference_devices = FirebaseDatabase.getInstance().getReference().child("devices");
 
         usertv.setText(user);
 
@@ -133,7 +133,9 @@ public class AddDevice extends AppCompatActivity {
                         productKey.setErrorEnabled(false);
 
                         reference_user = FirebaseDatabase.getInstance().getReference().child("Users").child(user).child("ProductsOwned");
-                        reference_user.addValueEventListener(new ValueEventListener() {
+                        reference_devices = FirebaseDatabase.getInstance().getReference().child("devices").child(userEnteredProductID).child("users");
+
+                        reference_devices.addValueEventListener(new ValueEventListener() {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot snapshot) {
 
@@ -148,8 +150,28 @@ public class AddDevice extends AppCompatActivity {
 
                             }
                         });
-                            reference_user.child(String.valueOf(maxProductCount+1)).setValue(userEnteredProductID);
 
+                        Query checkDevice = reference_user.equalTo(userEnteredProductID);
+
+                        checkDevice.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                if (snapshot.exists()){
+                                    Toast.makeText(AddDevice.this, "Device Already added", Toast.LENGTH_SHORT).show();
+                                }
+                                else{
+                                    reference_user.child(userEnteredProductID).child("ProductID").setValue(userEnteredProductID);
+                                    reference_user.child(userEnteredProductID).child("nickname").setValue("null");
+                                    Toast.makeText(AddDevice.this, "Device added Successfully", Toast.LENGTH_SHORT).show();
+                                    reference_devices.child(String.valueOf(maxProductCount+1)).setValue(email);
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
+
+                            }
+                        });
 
 
                     }
