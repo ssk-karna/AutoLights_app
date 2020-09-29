@@ -23,9 +23,8 @@ public class AddDevice extends AppCompatActivity {
     String email,user;
     Button addDevice;
     TextInputLayout productID,productKey;
-    TextView usertv;
-    DatabaseReference reference;
-    DatabaseReference ref;
+    TextView usertv,iduserEntered,idDb;
+
 
 
 
@@ -41,9 +40,9 @@ public class AddDevice extends AppCompatActivity {
         productID = findViewById(R.id.productId);
         productKey = findViewById(R.id.productKey);
         usertv = findViewById(R.id.tvusername);
+        iduserEntered = findViewById(R.id.tvuserenteredID);
+        idDb = findViewById(R.id.tvDbid);
 
-        reference = FirebaseDatabase.getInstance().getReference().child("Users");
-        ref = FirebaseDatabase.getInstance().getReference().child("Products");
 
         usertv.setText(user);
 
@@ -54,48 +53,91 @@ public class AddDevice extends AppCompatActivity {
             }
         });
 
+
     }
 
-    private void addingDevice(View view) {
+    public void addingDevice(View v) {
 
-       validateDevice();
+        if(!validateProductID() | !validateProductKey()){
+            return;
+        }
+        else {
+
+            checkingDevice();
+        }
     }
 
+    private Boolean validateProductID(){
+        String val = productID.getEditText().getText().toString();
+            // 8-20 characters long
+
+        if(val.isEmpty()){
+            productID.setError("Field Cannot be Empty");
+            return false;
+        }
+        else
+        {
+            productID.setError(null);
+            productID.setErrorEnabled(false);
+            return true;
+
+        }
+    }
+
+    private Boolean validateProductKey(){
+        String val = productKey.getEditText().getText().toString();
 
 
+        if(val.isEmpty()){
+            productKey.setError("Field Cannot be Empty");
+            return false;
+        }
+        else
+        {
+            productKey.setError(null);
+            productKey.setErrorEnabled(false);
+            return true;
 
-    private void validateDevice(){
-       final String product_ID = productID.getEditText().getText().toString();
-       final String product_key = productKey.getEditText().getText().toString();
+        }
+    }
 
-        DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("Products");
+    private void checkingDevice() {
 
-        Query checkDevice = ref.orderByChild("productKey").equalTo(product_ID);
+        final String userEnteredProductID = productID.getEditText().getText().toString().trim();
+        final String userEnteredProductKey = productKey.getEditText().getText().toString().trim();
 
-        checkDevice.addListenerForSingleValueEvent(new ValueEventListener() {
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("devices");
+
+        Query checkUser = reference.orderByChild("productID").equalTo(userEnteredProductID);
+
+
+        checkUser.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if(snapshot.exists()){
+                if (snapshot.exists()){
 
                     productID.setError(null);
                     productID.setErrorEnabled(false);
 
-                    String productKeyFromDb = snapshot.child(product_ID).child("productKey").getValue(String.class);
 
-                    if(productKeyFromDb.equals(product_key)){
+                    String productKeyFromDB = snapshot.child(userEnteredProductID).child("productKey").getValue(String.class);
+
+                    if(productKeyFromDB.equals(userEnteredProductKey)){
+
                         productKey.setError(null);
                         productKey.setErrorEnabled(false);
+
                         DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("Users");
-                        reference.child(user).child("ProductsOwned").setValue(product_ID);
+                        reference.child(user).child("ProductsOwned").setValue(userEnteredProductID);
+
+
                     }
                     else{
-                        productKey.setError("Wrong Key Entered! Please Check");
+                        productKey.setError("Wrong Key Entered!");
                         productKey.requestFocus();
                     }
-
-                }
-                else{
-                    productID.setError("No such product exists");
+                }else {
+                    productID.setError("No Such Product Exists!");
                     productID.requestFocus();
                 }
             }
@@ -105,9 +147,54 @@ public class AddDevice extends AppCompatActivity {
 
             }
         });
-
-
-
     }
 
+
+//    private void validateDevice(){
+//       final String product_ID = productID.getEditText().getText().toString().trim();
+//       final String product_key = productKey.getEditText().getText().toString().trim();
+//
+//        DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("Products");
+//
+//
+//        Query checkDevice = ref.orderByChild("productKey").equalTo(product_ID);
+//
+//        checkDevice.addListenerForSingleValueEvent(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot snapshot) {
+//                if(snapshot.exists()){
+//
+//                    productID.setError(null);
+//                    productID.setErrorEnabled(false);
+//
+//                    String productKeyFromDb = snapshot.child(product_ID).child("productKey").getValue(String.class);
+//
+//                    if(productKeyFromDb.equals(product_key)){
+//                        productKey.setError(null);
+//                        productKey.setErrorEnabled(false);
+//                        DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("Users");
+//                        reference.child(user).child("ProductsOwned").setValue(product_ID);
+//                    }
+//                    else{
+//                        productKey.setError("Wrong Key Entered! Please Check");
+//                        productKey.requestFocus();
+//                    }
+//
+//                }
+//                else{
+//                    productID.setError("No such product exists");
+//                    productID.requestFocus();
+//                }
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError error) {
+//
+//            }
+//        });
+//
+//
+//
+//    }
+//
 }
