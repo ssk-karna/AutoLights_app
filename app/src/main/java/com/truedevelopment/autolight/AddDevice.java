@@ -25,6 +25,9 @@ public class AddDevice extends AppCompatActivity {
     TextInputLayout productID,productKey;
     TextView usertv,iduserEntered,idDb;
 
+    DatabaseReference reference_user;
+    int maxProductCount = 0;
+
 
 
 
@@ -42,6 +45,8 @@ public class AddDevice extends AppCompatActivity {
         usertv = findViewById(R.id.tvusername);
         iduserEntered = findViewById(R.id.tvuserenteredID);
         idDb = findViewById(R.id.tvDbid);
+
+        reference_user = FirebaseDatabase.getInstance().getReference().child("Users");
 
 
         usertv.setText(user);
@@ -127,8 +132,24 @@ public class AddDevice extends AppCompatActivity {
                         productKey.setError(null);
                         productKey.setErrorEnabled(false);
 
-                        DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("Users");
-                        reference.child(user).child("ProductsOwned").setValue(userEnteredProductID);
+                        reference_user = FirebaseDatabase.getInstance().getReference().child("Users").child(user).child("ProductsOwned");
+                        reference_user.addValueEventListener(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+
+                                if (snapshot.exists()){
+                                    maxProductCount = (int) snapshot.getChildrenCount();
+                                }
+
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
+
+                            }
+                        });
+                            reference_user.child(String.valueOf(maxProductCount+1)).setValue(userEnteredProductID);
+
 
 
                     }
@@ -149,41 +170,16 @@ public class AddDevice extends AppCompatActivity {
         });
     }
 
-
-//    private void validateDevice(){
-//       final String product_ID = productID.getEditText().getText().toString().trim();
-//       final String product_key = productKey.getEditText().getText().toString().trim();
+//    private void addOwnedProducts(final String productId){
 //
-//        DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("Products");
+//        final String product = productId;
 //
-//
-//        Query checkDevice = ref.orderByChild("productKey").equalTo(product_ID);
-//
-//        checkDevice.addListenerForSingleValueEvent(new ValueEventListener() {
+//        reference_user.addValueEventListener(new ValueEventListener() {
 //            @Override
 //            public void onDataChange(@NonNull DataSnapshot snapshot) {
 //                if(snapshot.exists()){
-//
-//                    productID.setError(null);
-//                    productID.setErrorEnabled(false);
-//
-//                    String productKeyFromDb = snapshot.child(product_ID).child("productKey").getValue(String.class);
-//
-//                    if(productKeyFromDb.equals(product_key)){
-//                        productKey.setError(null);
-//                        productKey.setErrorEnabled(false);
-//                        DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("Users");
-//                        reference.child(user).child("ProductsOwned").setValue(product_ID);
-//                    }
-//                    else{
-//                        productKey.setError("Wrong Key Entered! Please Check");
-//                        productKey.requestFocus();
-//                    }
-//
-//                }
-//                else{
-//                    productID.setError("No such product exists");
-//                    productID.requestFocus();
+//                    maxProductCount = (int) snapshot.getChildrenCount();
+//                    reference_user.child(String.valueOf(maxProductCount+1)).setValue(product);
 //                }
 //            }
 //
@@ -194,7 +190,5 @@ public class AddDevice extends AppCompatActivity {
 //        });
 //
 //
-//
 //    }
-//
 }
