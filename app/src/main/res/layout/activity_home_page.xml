@@ -7,11 +7,6 @@
     android:orientation="vertical"
     tools:context=".HomePage">
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Welcome to homepage"
-        />
     <Button
         android:id="@+id/user_profile"
         android:layout_width="match_parent"
@@ -22,6 +17,12 @@
         android:id="@+id/add_device"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Add Devuce" />
+        android:text="Add Device" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
 
 </LinearLayout>

@@ -44,8 +44,7 @@ public class AddDevice extends AppCompatActivity {
         productKey = findViewById(R.id.productKey);
         nickname = findViewById(R.id.nickname);
         usertv = findViewById(R.id.tvusername);
-        iduserEntered = findViewById(R.id.tvuserenteredID);
-        idDb = findViewById(R.id.tvDbid);
+
 
         reference_user = FirebaseDatabase.getInstance().getReference().child("Users");
         reference_devices = FirebaseDatabase.getInstance().getReference().child("devices");
