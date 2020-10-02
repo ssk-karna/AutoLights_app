@@ -22,7 +22,7 @@ public class AddDevice extends AppCompatActivity {
 
     String email,user;
     Button addDevice;
-    TextInputLayout productID,productKey;
+    TextInputLayout productID,productKey,nickname;
     TextView usertv,iduserEntered,idDb;
 
     DatabaseReference reference_user,reference_devices;
@@ -42,6 +42,7 @@ public class AddDevice extends AppCompatActivity {
         addDevice = findViewById(R.id.btnAdd);
         productID = findViewById(R.id.productId);
         productKey = findViewById(R.id.productKey);
+        nickname = findViewById(R.id.nickname);
         usertv = findViewById(R.id.tvusername);
         iduserEntered = findViewById(R.id.tvuserenteredID);
         idDb = findViewById(R.id.tvDbid);
@@ -63,7 +64,7 @@ public class AddDevice extends AppCompatActivity {
 
     public void addingDevice(View v) {
 
-        if(!validateProductID() | !validateProductKey()){
+        if(!validateProductID() | !validateProductKey() | !validateNickname()){
             return;
         }
         else {
@@ -74,7 +75,6 @@ public class AddDevice extends AppCompatActivity {
 
     private Boolean validateProductID(){
         String val = productID.getEditText().getText().toString();
-            // 8-20 characters long
 
         if(val.isEmpty()){
             productID.setError("Field Cannot be Empty");
@@ -84,6 +84,21 @@ public class AddDevice extends AppCompatActivity {
         {
             productID.setError(null);
             productID.setErrorEnabled(false);
+            return true;
+
+        }
+    }
+    private Boolean validateNickname(){
+        String val = nickname.getEditText().getText().toString();
+
+        if(val.isEmpty()){
+            nickname.setError("Field Cannot be Empty");
+            return false;
+        }
+        else
+        {
+            nickname.setError(null);
+            nickname.setErrorEnabled(false);
             return true;
 
         }
@@ -110,6 +125,7 @@ public class AddDevice extends AppCompatActivity {
 
         final String userEnteredProductID = productID.getEditText().getText().toString().trim();
         final String userEnteredProductKey = productKey.getEditText().getText().toString().trim();
+        final String userEnteredNickname = nickname.getEditText().getText().toString().trim();
 
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("devices");
 
@@ -151,19 +167,17 @@ public class AddDevice extends AppCompatActivity {
                             }
                         });
 
-                        Query checkDevice = reference_user.equalTo(userEnteredProductID);
-
-                        checkDevice.addListenerForSingleValueEvent(new ValueEventListener() {
+                        reference_user.addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                if (snapshot.exists()){
-                                    Toast.makeText(AddDevice.this, "Device Already added", Toast.LENGTH_SHORT).show();
+                                if (!snapshot.hasChild(userEnteredProductID)){
+                                    reference_user.child(userEnteredProductID).child("ProductID").setValue(userEnteredProductID);
+                                    reference_user.child(userEnteredProductID).child("nickname").setValue(userEnteredNickname);
+                                    Toast.makeText(AddDevice.this, "Device added", Toast.LENGTH_SHORT).show();
+                                    reference_devices.child(String.valueOf(maxProductCount+1)).setValue(email);
                                 }
                                 else{
-                                    reference_user.child(userEnteredProductID).child("ProductID").setValue(userEnteredProductID);
-                                    reference_user.child(userEnteredProductID).child("nickname").setValue("null");
-                                    Toast.makeText(AddDevice.this, "Device added Successfully", Toast.LENGTH_SHORT).show();
-                                    reference_devices.child(String.valueOf(maxProductCount+1)).setValue(email);
+                                    Toast.makeText(AddDevice.this, "Device Already added", Toast.LENGTH_SHORT).show();
                                 }
                             }
 
@@ -192,25 +206,4 @@ public class AddDevice extends AppCompatActivity {
         });
     }
 
-//    private void addOwnedProducts(final String productId){
-//
-//        final String product = productId;
-//
-//        reference_user.addValueEventListener(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(@NonNull DataSnapshot snapshot) {
-//                if(snapshot.exists()){
-//                    maxProductCount = (int) snapshot.getChildrenCount();
-//                    reference_user.child(String.valueOf(maxProductCount+1)).setValue(product);
-//                }
-//            }
-//
-//            @Override
-//            public void onCancelled(@NonNull DatabaseError error) {
-//
-//            }
-//        });
-//
-//
-//    }
 }
