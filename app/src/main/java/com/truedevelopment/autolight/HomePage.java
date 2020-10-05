@@ -1,15 +1,20 @@
 package com.truedevelopment.autolight;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 
+import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 public class HomePage extends AppCompatActivity {
@@ -17,7 +22,10 @@ public class HomePage extends AppCompatActivity {
     Button userProfile, addDevice;
     String user_name,user_username,user_email,user_phone,user_password;
     RecyclerView recview;
-    MyAdapter adapter;
+   private FirebaseRecyclerOptions<Product> options;
+   private FirebaseRecyclerAdapter<Product, theViewholder> adapter;
+   private RecyclerView recyclerView;
+   DatabaseReference ref;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,8 +33,9 @@ public class HomePage extends AppCompatActivity {
         setContentView(R.layout.activity_home_page);
         userProfile =  findViewById(R.id.user_profile);
         addDevice = findViewById(R.id.add_device);
-        recview = findViewById(R.id.recview);
-
+        recyclerView= findViewById(R.id.recview);
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         Intent intent = getIntent();
         user_name = intent.getStringExtra("name");
@@ -34,6 +43,7 @@ public class HomePage extends AppCompatActivity {
         user_email = intent.getStringExtra("email");
         user_phone = intent.getStringExtra("phone");
         user_password = intent.getStringExtra("password");
+        ref = FirebaseDatabase.getInstance().getReference("Users").child(user_username).child("ProductsOwned");
 
         userProfile.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -64,13 +74,27 @@ public class HomePage extends AppCompatActivity {
             }
         });
 
-        recview.setLayoutManager(new LinearLayoutManager(this));
-        FirebaseRecyclerOptions<Product> options = new FirebaseRecyclerOptions.Builder<Product>()
-                .setQuery(FirebaseDatabase.getInstance().getReference().child("Users").child(user_username).child("ProductsOwned"),Product.class)
-                .build();
+         options = new FirebaseRecyclerOptions.Builder<Product>().setQuery(ref,Product.class).build();
+         adapter = new FirebaseRecyclerAdapter<Product, theViewholder>(options) {
+             @Override
+             protected void onBindViewHolder(@NonNull theViewholder holder, int position, @NonNull Product model) {
 
-        adapter = new MyAdapter(options);
-        recview.setAdapter(adapter);
+                 holder.devicename.setText(""+model.getnickname());
+                 holder.deviceid.setText(""+model.getProductID());
+
+             }
+
+             @NonNull
+             @Override
+             public theViewholder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+
+                 View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.row_layout,parent,false);
+
+                 return new theViewholder(v);
+             }
+         };
+        adapter.startListening();
+        recyclerView.setAdapter(adapter);
 
     }
 
@@ -78,6 +102,7 @@ public class HomePage extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         adapter.startListening();
+        recyclerView.setAdapter(adapter);
     }
 
     @Override

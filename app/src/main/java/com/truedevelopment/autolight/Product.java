@@ -2,29 +2,30 @@ package com.truedevelopment.autolight;
 
 public class Product {
 
-    String deviceName,productID;
+   private String nickname;
+   private String ProductID;
 
     public Product() {
     }
 
-    public Product(String deviceName, String productID) {
-        this.deviceName = deviceName;
-        this.productID = productID;
+    public Product(String nickname, String ProductID) {
+        this.nickname = nickname;
+        this.ProductID = ProductID;
     }
 
-    public String getDeviceName() {
-        return deviceName;
+    public String getnickname() {
+        return nickname;
     }
 
-    public void setDeviceName(String deviceName) {
-        this.deviceName = deviceName;
+    public void setnickname(String nickname) {
+        this.nickname = nickname;
     }
 
     public String getProductID() {
-        return productID;
+        return ProductID;
     }
 
-    public void setProductID(String productID) {
-        this.productID = productID;
+    public void setProductID(String ProductID) {
+        this.ProductID = ProductID;
     }
 }
