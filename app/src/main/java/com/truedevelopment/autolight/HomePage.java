@@ -21,7 +21,7 @@ public class HomePage extends AppCompatActivity {
 
     Button userProfile, addDevice;
     String user_name,user_username,user_email,user_phone,user_password;
-    RecyclerView recview;
+
    private FirebaseRecyclerOptions<Product> options;
    private FirebaseRecyclerAdapter<Product, theViewholder> adapter;
    private RecyclerView recyclerView;
@@ -50,7 +50,6 @@ public class HomePage extends AppCompatActivity {
             public void onClick(View v) {
                 Intent UserIntent = new Intent(getApplicationContext(),UserProfile.class);
 
-
                UserIntent.putExtra("name",user_name);
                UserIntent.putExtra("username",user_username);
                UserIntent.putExtra("email",user_email);
@@ -58,7 +57,6 @@ public class HomePage extends AppCompatActivity {
                UserIntent.putExtra("password",user_password);
 
                 startActivity(UserIntent);
-
             }
         });
 
@@ -70,7 +68,6 @@ public class HomePage extends AppCompatActivity {
                 deviceIntent.putExtra("username",user_username);
 
                 startActivity(deviceIntent);
-
             }
         });
 
@@ -79,9 +76,27 @@ public class HomePage extends AppCompatActivity {
              @Override
              protected void onBindViewHolder(@NonNull theViewholder holder, int position, @NonNull Product model) {
 
+                 final String lastControlledBy = user_email;
+
+
                  holder.devicename.setText(""+model.getnickname());
                  holder.deviceid.setText(""+model.getProductID());
-
+                 final String productid = holder.deviceid.getText().toString();
+                 final DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("devices").child(productid);
+                 holder.On.setOnClickListener(new View.OnClickListener() {
+                     @Override
+                     public void onClick(View v) {
+                         ref.child("LED_STATUS").setValue("ON");
+                         ref.child("lastControlledBy").setValue(lastControlledBy);
+                     }
+                 });
+                 holder.Off.setOnClickListener(new View.OnClickListener() {
+                     @Override
+                     public void onClick(View v) {
+                         ref.child("LED_STATUS").setValue("OFF");
+                         ref.child("lastControlledBy").setValue(lastControlledBy);
+                     }
+                 });
              }
 
              @NonNull
