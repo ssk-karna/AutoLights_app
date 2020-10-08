@@ -8,9 +8,11 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.PopupMenu;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
@@ -77,11 +79,12 @@ public class HomePage extends AppCompatActivity {
              protected void onBindViewHolder(@NonNull theViewholder holder, int position, @NonNull Product model) {
 
                  final String lastControlledBy = user_email;
-
+                 final String name_username = user_username;
 
                  holder.devicename.setText(""+model.getnickname());
                  holder.deviceid.setText(""+model.getProductID());
                  final String productid = holder.deviceid.getText().toString();
+                 final String productname = holder.devicename.getText().toString();
                  final DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("devices").child(productid);
                  holder.On.setOnClickListener(new View.OnClickListener() {
                      @Override
@@ -97,6 +100,34 @@ public class HomePage extends AppCompatActivity {
                          ref.child("lastControlledBy").setValue(lastControlledBy);
                      }
                  });
+
+                 holder.popUpMenu.setOnClickListener(new View.OnClickListener() {
+                     @Override
+                     public void onClick(View v) {
+                         PopupMenu popupMenu = new PopupMenu(v.getContext(),v);
+                         popupMenu.getMenuInflater().inflate(R.menu.pop_menu,popupMenu.getMenu());
+                         popupMenu.show();
+                         popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                             @Override
+                             public boolean onMenuItemClick(MenuItem item) {
+                                 switch (item.getItemId()){
+                                     case R.id.menu_edit:
+                                     {
+                                         Intent editActivityIntent = new Intent(getApplicationContext(),edit_menu.class);
+
+                                         editActivityIntent.putExtra("editname",productname);
+                                         editActivityIntent.putExtra("productid",productid);
+                                         editActivityIntent.putExtra("username",name_username);
+
+                                         startActivity(editActivityIntent);
+                                         break;
+                                     }
+                                 }
+                                 return true;
+                             }
+                         });
+                     }
+                 });
              }
 
              @NonNull
@@ -104,7 +135,6 @@ public class HomePage extends AppCompatActivity {
              public theViewholder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 
                  View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.row_layout,parent,false);
-
                  return new theViewholder(v);
              }
          };

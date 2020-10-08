@@ -19,7 +19,7 @@
         android:layout_marginTop="10dp">
 
         <LinearLayout
-            android:layout_width="304dp"
+            android:layout_width="228dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:orientation="vertical">
@@ -28,18 +28,18 @@
                 android:id="@+id/tvDeviceName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
                 android:layout_weight="1"
                 android:hint="Device name"
-                android:layout_marginBottom="5dp"
                 android:textSize="25sp" />
 
             <TextView
                 android:id="@+id/tvProductID"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
                 android:layout_weight="1"
                 android:hint="Product ID"
-                android:layout_marginBottom="5dp"
                 android:textSize="18sp" />
         </LinearLayout>
 
@@ -66,6 +66,13 @@
                 android:layout_marginBottom="5dp"
                 android:layout_weight="1"
                 android:text="OFF" />
+
+            <ImageView
+                android:layout_width="52dp"
+                android:layout_height="54dp"
+                android:src="@mipmap/moremenu"
+                android:id="@+id/menuMore"/>
+
         </LinearLayout>
 
     </LinearLayout>
