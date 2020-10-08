@@ -201,6 +201,9 @@ public class SignUp extends AppCompatActivity {
         reference.child(username).setValue(helperClass);
         reference.child(username).child("ProductsOwned").setValue("0");
 
+        Intent logInIntent = new Intent(SignUp.this,LoginActivity.class);
+        startActivity(logInIntent);
+
     }
 
 
