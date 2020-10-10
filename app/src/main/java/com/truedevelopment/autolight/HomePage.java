@@ -16,6 +16,8 @@ import android.widget.PopupMenu;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -111,16 +113,29 @@ public class HomePage extends AppCompatActivity {
                              @Override
                              public boolean onMenuItemClick(MenuItem item) {
                                  switch (item.getItemId()){
-                                     case R.id.menu_edit:
-                                     {
-                                         Intent editActivityIntent = new Intent(getApplicationContext(),edit_menu.class);
+                                     case R.id.menu_edit: {
+                                         Intent editActivityIntent = new Intent(getApplicationContext(), edit_menu.class);
 
-                                         editActivityIntent.putExtra("editname",productname);
-                                         editActivityIntent.putExtra("productid",productid);
-                                         editActivityIntent.putExtra("username",name_username);
+                                         editActivityIntent.putExtra("editname", productname);
+                                         editActivityIntent.putExtra("productid", productid);
+                                         editActivityIntent.putExtra("username", name_username);
 
                                          startActivity(editActivityIntent);
                                          break;
+                                     }
+                                         case R.id.menu_delete:
+                                         {
+                                             FirebaseDatabase.getInstance().getReference().child("Users").child(name_username).child("ProductsOwned")
+                                                     .child(productid)
+                                                     .removeValue()
+                                                     .addOnCompleteListener(new OnCompleteListener<Void>() {
+
+                                                         @Override
+                                                         public void onComplete(@NonNull Task<Void> task) {
+
+                                                         }
+                                                     });
+                                             break;
                                      }
                                  }
                                  return true;
