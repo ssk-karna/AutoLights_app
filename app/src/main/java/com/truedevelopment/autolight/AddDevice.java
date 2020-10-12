@@ -149,6 +149,7 @@ public class AddDevice extends AppCompatActivity {
 
                         reference_user = FirebaseDatabase.getInstance().getReference().child("Users").child(user).child("ProductsOwned");
                         reference_devices = FirebaseDatabase.getInstance().getReference().child("devices").child(userEnteredProductID).child("users");
+                        final String username = user;
 
                         reference_devices.addValueEventListener(new ValueEventListener() {
                             @Override
@@ -173,7 +174,7 @@ public class AddDevice extends AppCompatActivity {
                                     reference_user.child(userEnteredProductID).child("ProductID").setValue(userEnteredProductID);
                                     reference_user.child(userEnteredProductID).child("nickname").setValue(userEnteredNickname);
                                     Toast.makeText(AddDevice.this, "Device added", Toast.LENGTH_SHORT).show();
-                                    reference_devices.child(String.valueOf(maxProductCount+1)).setValue(email);
+                                    reference_devices.child(username).child("email").setValue(email);
                                 }
                                 else{
                                     Toast.makeText(AddDevice.this, "Device Already added", Toast.LENGTH_SHORT).show();

@@ -18,8 +18,12 @@ import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 
 public class HomePage extends AppCompatActivity {
 
@@ -30,6 +34,8 @@ public class HomePage extends AppCompatActivity {
    private FirebaseRecyclerAdapter<Product, theViewholder> adapter;
    private RecyclerView recyclerView;
    DatabaseReference ref;
+    int maxDeviceCount=0;
+   int maxUserCount=0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -124,17 +130,69 @@ public class HomePage extends AppCompatActivity {
                                          break;
                                      }
                                          case R.id.menu_delete:
-                                         {
-                                             FirebaseDatabase.getInstance().getReference().child("Users").child(name_username).child("ProductsOwned")
-                                                     .child(productid)
-                                                     .removeValue()
-                                                     .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                         {  DatabaseReference productsRef = FirebaseDatabase.getInstance().getReference().child("Users").child(name_username).child("ProductsOwned");
+                                         Query checkDeviceList = productsRef.orderByChild("nickname");
+                                         checkDeviceList.addValueEventListener(new ValueEventListener() {
+                                             @Override
+                                             public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                                 if (snapshot.exists()){
+                                                     maxDeviceCount = (int) snapshot.getChildrenCount();
+                                                 }
+                                             }
 
-                                                         @Override
-                                                         public void onComplete(@NonNull Task<Void> task) {
+                                             @Override
+                                             public void onCancelled(@NonNull DatabaseError error) {
 
-                                                         }
-                                                     });
+                                             }
+                                         });
+                                         DatabaseReference userRef = ref.child("users");
+                                         Query checkUserList = userRef;
+                                         checkUserList.addValueEventListener(new ValueEventListener() {
+                                             @Override
+                                             public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                                 if (snapshot.exists()){
+                                                     maxUserCount = (int) snapshot.getChildrenCount();
+                                                 }
+                                             }
+
+                                             @Override
+                                             public void onCancelled(@NonNull DatabaseError error) {
+
+                                             }
+                                         });
+
+                                         if(maxDeviceCount!=1) {
+                                             productsRef.child(productid).removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                 @Override
+                                                 public void onComplete(@NonNull Task<Void> task) {
+
+                                                 }
+                                             });
+                                         }
+                                             else{
+                                                 productsRef.setValue("null").addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                     @Override
+                                                     public void onComplete(@NonNull Task<Void> task) {
+
+                                                     }
+                                                 });
+                                             }
+                                             if(maxUserCount!=1) {
+                                                 userRef.child(user_username).removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                     @Override
+                                                     public void onComplete(@NonNull Task<Void> task) {
+
+                                                     }
+                                                 });
+                                             }
+                                             else{
+                                                 userRef.setValue("null").addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                     @Override
+                                                     public void onComplete(@NonNull Task<Void> task) {
+
+                                                     }
+                                                 });
+                                             }
                                              break;
                                      }
                                  }
@@ -155,7 +213,6 @@ public class HomePage extends AppCompatActivity {
          };
         adapter.startListening();
         recyclerView.setAdapter(adapter);
-
     }
 
     @Override
