@@ -19,6 +19,7 @@ import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -28,9 +29,9 @@ import com.google.firebase.database.ValueEventListener;
 
 public class HomePage extends AppCompatActivity {
 
-    Button userProfile, addDevice;
+    Button userProfile;
     String user_name,user_username,user_email,user_phone,user_password;
-
+    FloatingActionButton floatingAddButton;
 
    private FirebaseRecyclerOptions<Product> options;
    private FirebaseRecyclerAdapter<Product, theViewholder> adapter;
@@ -44,10 +45,23 @@ public class HomePage extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home_page);
         userProfile =  findViewById(R.id.user_profile);
-        addDevice = findViewById(R.id.add_device);
+        floatingAddButton = findViewById(R.id.floatingAddButton);
         recyclerView= findViewById(R.id.recview);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                if(dy>0)
+                {
+                    floatingAddButton.hide();
+                }else{
+                    floatingAddButton.show();
+                }
+                super.onScrolled(recyclerView, dx, dy);
+            }
+        });
 
         SharedPreferences sp = getApplicationContext().getSharedPreferences("MyUserPrefs",MODE_PRIVATE);
          user_name = sp.getString("name","");
@@ -72,7 +86,7 @@ public class HomePage extends AppCompatActivity {
             }
         });
 
-        addDevice.setOnClickListener(new View.OnClickListener() {
+        floatingAddButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent deviceIntent = new Intent(getApplicationContext(),AddDevice.class);
