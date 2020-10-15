@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.ActivityOptions;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Pair;
 import android.view.View;
@@ -140,6 +141,9 @@ public class LoginActivity extends AppCompatActivity {
                         mPassword.setError(null);
                         mPassword.setErrorEnabled(false);
 
+                        SharedPreferences sp = getSharedPreferences("MyUserPrefs",MODE_PRIVATE);
+                        SharedPreferences.Editor editor = sp.edit();
+
                         String nameFromDB = snapshot.child(userEnteredUsername).child("name").getValue(String.class);
                         String usernameFromDB = snapshot.child(userEnteredUsername).child("username").getValue(String.class);
                         String emailFromDB = snapshot.child(userEnteredUsername).child("email").getValue(String.class);
@@ -147,11 +151,12 @@ public class LoginActivity extends AppCompatActivity {
 
                         Intent intent = new Intent(getApplicationContext(),HomePage.class);
 
-                        intent.putExtra("name",nameFromDB);
-                        intent.putExtra("username",usernameFromDB);
-                        intent.putExtra("email",emailFromDB);
-                        intent.putExtra("phone",phoneFromDB);
-                        intent.putExtra("password",passwordFromDB);
+                        editor.putString("name",nameFromDB);
+                        editor.putString("username",usernameFromDB);
+                        editor.putString("email",emailFromDB);
+                        editor.putString("phone",phoneFromDB);
+                        editor.putString("password",passwordFromDB);
+                        editor.commit();
 
 
                         //Intent homeIntent = new Intent(getApplicationContext(), HomePage.class);

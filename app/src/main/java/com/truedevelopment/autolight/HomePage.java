@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -30,6 +31,7 @@ public class HomePage extends AppCompatActivity {
     Button userProfile, addDevice;
     String user_name,user_username,user_email,user_phone,user_password;
 
+
    private FirebaseRecyclerOptions<Product> options;
    private FirebaseRecyclerAdapter<Product, theViewholder> adapter;
    private RecyclerView recyclerView;
@@ -47,12 +49,12 @@ public class HomePage extends AppCompatActivity {
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        Intent intent = getIntent();
-        user_name = intent.getStringExtra("name");
-        user_username = intent.getStringExtra("username");
-        user_email = intent.getStringExtra("email");
-        user_phone = intent.getStringExtra("phone");
-        user_password = intent.getStringExtra("password");
+        SharedPreferences sp = getApplicationContext().getSharedPreferences("MyUserPrefs",MODE_PRIVATE);
+         user_name = sp.getString("name","");
+        user_username = sp.getString("username","");
+        user_email = sp.getString("email","");
+        user_phone = sp.getString("phone","");
+        user_password = sp.getString("password","");
         ref = FirebaseDatabase.getInstance().getReference("Users").child(user_username).child("ProductsOwned");
 
         userProfile.setOnClickListener(new View.OnClickListener() {

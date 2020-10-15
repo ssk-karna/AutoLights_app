@@ -3,6 +3,7 @@ package com.truedevelopment.autolight;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -50,12 +51,13 @@ public class UserProfile extends AppCompatActivity {
     }
 
     private void showAllUserData() {
-        Intent UserIntent = getIntent();
-         user_name = UserIntent.getStringExtra("name");
-         user_username = UserIntent.getStringExtra("username");
-         user_email = UserIntent.getStringExtra("email");
-         user_phone = UserIntent.getStringExtra("phone");
-         user_password = UserIntent.getStringExtra("password");
+        SharedPreferences sp = getApplicationContext().getSharedPreferences("MyUserPrefs",MODE_PRIVATE);
+        //Intent UserIntent = getIntent();
+         user_name = sp.getString("name","");
+         user_username = sp.getString("username","");
+         user_email = sp.getString("email","");
+         user_phone = sp.getString("phone","");
+         user_password = sp.getString("password","");
 
       fullNameLabel.setText(user_name);
       userNameLabel.setText(user_username);

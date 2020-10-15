@@ -31,8 +31,6 @@ public class SignUp extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up);
 
-        //FirebaseApp.initializeApp(this);
-
         regName = findViewById(R.id.name);
         regUserName = findViewById(R.id.userName);
         regMail = findViewById(R.id.tvusername);

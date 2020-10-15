@@ -28,9 +28,6 @@ public class AddDevice extends AppCompatActivity {
     DatabaseReference reference_user,reference_devices;
     int maxProductCount = 0;
 
-
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,6 +52,8 @@ public class AddDevice extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 addingDevice(v);
+                Intent homeIntent = new Intent(AddDevice.this, HomePage.class);
+                startActivity(homeIntent);
             }
         });
 
