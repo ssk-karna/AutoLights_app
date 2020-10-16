@@ -7,11 +7,18 @@
     android:orientation="vertical"
     tools:context=".HomePage">
 
-    <Button
-        android:id="@+id/user_profile"
-        android:layout_width="match_parent"
+    <TextView
+        android:id="@+id/emptyMessage"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="User Profile" />
+        android:layout_centerInParent="true"
+        android:fontFamily="@font/bevan"
+        android:text="You do not have any devices add. Please add a device to control them."
+        android:textAlignment="center"
+        android:textColor="@color/colorPrimary"
+        android:layout_marginRight="20dp"
+        android:layout_marginLeft="20dp"
+        android:textSize="25sp" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recview"
@@ -29,6 +36,15 @@
             android:layout_margin="16dp"
             android:backgroundTint="@color/floatingAdd_background"
             android:src="@drawable/add_option" />
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/floatingProfileButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_margin="16dp"
+        android:backgroundTint="@color/floatingAdd_background"
+        android:src="@mipmap/account_settings_round" />
 
-    </RelativeLayout>
+</RelativeLayout>
 

@@ -133,7 +133,6 @@ public class LoginActivity extends AppCompatActivity {
                     mUserId.setError(null);
                     mUserId.setErrorEnabled(false);
 
-
                     String passwordFromDB = snapshot.child(userEnteredUsername).child("password").getValue(String.class);
 
                     if(passwordFromDB.equals(userEnteredPassword)){

@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.PopupMenu;
+import android.widget.TextView;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
@@ -31,7 +32,8 @@ public class HomePage extends AppCompatActivity {
 
     Button userProfile;
     String user_name,user_username,user_email,user_phone,user_password;
-    FloatingActionButton floatingAddButton;
+    FloatingActionButton floatingAddButton, floatingProfileButton;
+    TextView emptyMessage;
 
    private FirebaseRecyclerOptions<Product> options;
    private FirebaseRecyclerAdapter<Product, theViewholder> adapter;
@@ -44,11 +46,13 @@ public class HomePage extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home_page);
-        userProfile =  findViewById(R.id.user_profile);
         floatingAddButton = findViewById(R.id.floatingAddButton);
+        floatingProfileButton = findViewById(R.id.floatingProfileButton);
+        emptyMessage = findViewById(R.id.emptyMessage);
         recyclerView= findViewById(R.id.recview);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
 
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
@@ -56,8 +60,10 @@ public class HomePage extends AppCompatActivity {
                 if(dy>0)
                 {
                     floatingAddButton.hide();
+                    floatingProfileButton.hide();
                 }else{
                     floatingAddButton.show();
+                    floatingProfileButton.show();
                 }
                 super.onScrolled(recyclerView, dx, dy);
             }
@@ -69,9 +75,10 @@ public class HomePage extends AppCompatActivity {
         user_email = sp.getString("email","");
         user_phone = sp.getString("phone","");
         user_password = sp.getString("password","");
+        checkDevicesExist(user_username);
         ref = FirebaseDatabase.getInstance().getReference("Users").child(user_username).child("ProductsOwned");
 
-        userProfile.setOnClickListener(new View.OnClickListener() {
+        floatingProfileButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent UserIntent = new Intent(getApplicationContext(),UserProfile.class);
@@ -81,7 +88,6 @@ public class HomePage extends AppCompatActivity {
                UserIntent.putExtra("email",user_email);
                UserIntent.putExtra("phone",user_phone);
                UserIntent.putExtra("password",user_password);
-
                 startActivity(UserIntent);
             }
         });
@@ -107,6 +113,7 @@ public class HomePage extends AppCompatActivity {
 
                  holder.devicename.setText(""+model.getnickname());
                  holder.deviceid.setText(""+model.getProductID());
+
                  final String productid = holder.deviceid.getText().toString();
                  final String productname = holder.devicename.getText().toString();
                  final DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("devices").child(productid);
@@ -242,5 +249,32 @@ public class HomePage extends AppCompatActivity {
     protected void onStop() {
         super.onStop();
         adapter.stopListening();
+    }
+
+    private void checkDevicesExist(String username){
+
+        DatabaseReference dbref = FirebaseDatabase.getInstance().getReference().child("Users").child(username).child("ProductsOwned");
+        Query checkDevice = dbref.orderByChild("username").equalTo("null");
+        checkDevice.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if(snapshot.exists()){
+                    emptyMessage.setVisibility(View.VISIBLE);
+                    //emptyMessage.setVisibility(View.VISIBLE);
+                    //recyclerView.setVisibility(View.GONE);
+                }
+                else{
+                    //recyclerView.setVisibility(View.VISIBLE);
+                    emptyMessage.setVisibility(View.GONE);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+
     }
 }
