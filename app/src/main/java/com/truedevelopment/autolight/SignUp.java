@@ -1,5 +1,6 @@
 package com.truedevelopment.autolight;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.ActivityOptions;
@@ -10,8 +11,14 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputLayout;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -24,6 +31,7 @@ public class SignUp extends AppCompatActivity {
   Button register,backToLogin;
   ImageView logoImg;
   TextView mWelcomeText, mSignInText;
+  FirebaseAuth mAuth;
 
 
     @Override
@@ -41,6 +49,7 @@ public class SignUp extends AppCompatActivity {
         mSignInText = findViewById(R.id.textSignInText);
         mWelcomeText = findViewById(R.id.textWelcomeText);
         logoImg = findViewById(R.id.logoImg);
+        mAuth = FirebaseAuth.getInstance();
 
         register.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -191,16 +200,30 @@ public class SignUp extends AppCompatActivity {
         String name = regName.getEditText().getText().toString();
         String email = regMail.getEditText().getText().toString();
         String phone = regPhone.getEditText().getText().toString();
-        String password = regPassword.getEditText().getText().toString();
-        String username = regUserName.getEditText().getText().toString();
+         String password = regPassword.getEditText().getText().toString();
+       final String username = regUserName.getEditText().getText().toString();
+        final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
-        UserHelperClass helperClass = new UserHelperClass(name,username,email,phone,password);
+        final UserHelperClass helperClass = new UserHelperClass(name,username,email,phone,password);
 
         reference.child(username).setValue(helperClass);
         reference.child(username).child("ProductsOwned").setValue("0");
 
-        Intent logInIntent = new Intent(SignUp.this,LoginActivity.class);
-        startActivity(logInIntent);
+        mAuth.createUserWithEmailAndPassword(email,password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+            @Override
+            public void onComplete(@NonNull Task<AuthResult> task) {
+                if(task.isSuccessful()){
+                    Toast.makeText(SignUp.this,"User Created",Toast.LENGTH_SHORT).show();
+                    Intent logInIntent = new Intent(SignUp.this,LoginActivity.class);
+                    reference.child(user.getUid()).setValue(helperClass);
+                    reference.child(user.getUid()).child("ProductsOwned").setValue("0");
+                    startActivity(logInIntent);
+                }else{
+                    Toast.makeText(SignUp.this,"Error !"+task.getException().getMessage(),Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
 
     }
 

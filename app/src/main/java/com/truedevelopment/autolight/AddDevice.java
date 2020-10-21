@@ -20,7 +20,7 @@ import com.google.firebase.database.ValueEventListener;
 
 public class AddDevice extends AppCompatActivity {
 
-    String email,user;
+    String email,user,uid;
     Button addDevice;
     TextInputLayout productID,productKey,nickname;
     TextView usertv,iduserEntered,idDb;
@@ -36,6 +36,7 @@ public class AddDevice extends AppCompatActivity {
 
         email = deviceIntent.getStringExtra("email");
         user = deviceIntent.getStringExtra("username");
+        uid = deviceIntent.getStringExtra("uid");
         addDevice = findViewById(R.id.btnAdd);
         productID = findViewById(R.id.productId);
         productKey = findViewById(R.id.productKey);
@@ -146,7 +147,7 @@ public class AddDevice extends AppCompatActivity {
                         productKey.setError(null);
                         productKey.setErrorEnabled(false);
 
-                        reference_user = FirebaseDatabase.getInstance().getReference().child("Users").child(user).child("ProductsOwned");
+                        reference_user = FirebaseDatabase.getInstance().getReference().child("Users").child(uid).child("ProductsOwned");
                         reference_devices = FirebaseDatabase.getInstance().getReference().child("devices").child(userEnteredProductID).child("users");
                         final String username = user;
 

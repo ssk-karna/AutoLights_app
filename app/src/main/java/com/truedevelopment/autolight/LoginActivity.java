@@ -13,8 +13,14 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputLayout;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -28,6 +34,7 @@ public class LoginActivity extends AppCompatActivity {
     TextView mWelcome, mSignIn;
     TextInputLayout mUserId, mPassword;
     ImageView logoImage;
+    FirebaseAuth mAuth;
 
 
     @Override
@@ -42,6 +49,7 @@ public class LoginActivity extends AppCompatActivity {
         mUserId = findViewById(R.id.username);
         mPassword = findViewById(R.id.password);
         logoImage = findViewById(R.id.logoImage);
+        mAuth = FirebaseAuth.getInstance();
 
         callSignUp.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -62,8 +70,6 @@ public class LoginActivity extends AppCompatActivity {
                 ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(LoginActivity.this,pairs);
 
                 startActivity(intent,options.toBundle());
-
-
 
             }
         });
@@ -111,19 +117,19 @@ public class LoginActivity extends AppCompatActivity {
         }
 
         else{
-            isUser();
+            login();
         }
 
     }
 
-    private void isUser() {
+    public void getUserDetails(final String uid) {
 
         final String userEnteredUsername = mUserId.getEditText().getText().toString().trim();
         final String userEnteredPassword = mPassword.getEditText().getText().toString().trim();
 
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("Users");
 
-        Query checkUser = reference.orderByChild("username").equalTo(userEnteredUsername);
+        Query checkUser = reference.equalTo(uid);
 
         checkUser.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -133,7 +139,7 @@ public class LoginActivity extends AppCompatActivity {
                     mUserId.setError(null);
                     mUserId.setErrorEnabled(false);
 
-                    String passwordFromDB = snapshot.child(userEnteredUsername).child("password").getValue(String.class);
+                    String passwordFromDB = snapshot.child(uid).child("password").getValue(String.class);
 
                     if(passwordFromDB.equals(userEnteredPassword)){
 
@@ -143,10 +149,10 @@ public class LoginActivity extends AppCompatActivity {
                         SharedPreferences sp = getSharedPreferences("MyUserPrefs",MODE_PRIVATE);
                         SharedPreferences.Editor editor = sp.edit();
 
-                        String nameFromDB = snapshot.child(userEnteredUsername).child("name").getValue(String.class);
-                        String usernameFromDB = snapshot.child(userEnteredUsername).child("username").getValue(String.class);
-                        String emailFromDB = snapshot.child(userEnteredUsername).child("email").getValue(String.class);
-                        String phoneFromDB = snapshot.child(userEnteredUsername).child("phone").getValue(String.class);
+                        String nameFromDB = snapshot.child(uid).child("name").getValue(String.class);
+                        String usernameFromDB = snapshot.child(uid).child("username").getValue(String.class);
+                        String emailFromDB = snapshot.child(uid).child("email").getValue(String.class);
+                        String phoneFromDB = snapshot.child(uid).child("phone").getValue(String.class);
 
                         Intent intent = new Intent(getApplicationContext(),HomePage.class);
 
@@ -155,25 +161,41 @@ public class LoginActivity extends AppCompatActivity {
                         editor.putString("email",emailFromDB);
                         editor.putString("phone",phoneFromDB);
                         editor.putString("password",passwordFromDB);
+                        editor.putString("uid",uid);
                         editor.commit();
 
-
-                        //Intent homeIntent = new Intent(getApplicationContext(), HomePage.class);
                         startActivity(intent);
                     }
                     else{
                         mPassword.setError("Wrong Password!");
                         mPassword.requestFocus();
                     }
-                }else {
-                    mUserId.setError("No Such User Exists!");
-                    mUserId.requestFocus();
                 }
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
 
+            }
+        });
+    }
+
+    private void login(){
+         String userEnteredUsername = mUserId.getEditText().getText().toString().trim();
+         String userEnteredPassword = mPassword.getEditText().getText().toString().trim();
+        // DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference().child("Users");
+         final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        mAuth.signInWithEmailAndPassword(userEnteredUsername,userEnteredPassword).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+            @Override
+            public void onComplete(@NonNull Task<AuthResult> task) {
+                if(task.isSuccessful()){
+                    Toast.makeText(LoginActivity.this,"Login Successful",Toast.LENGTH_SHORT).show();
+                    getUserDetails(user.getUid());
+                    Intent newIntent = new Intent(LoginActivity.this, HomePage.class);
+                    startActivity(newIntent);
+                }else{
+                    Toast.makeText(LoginActivity.this,"Error !"+task.getException().getMessage(),Toast.LENGTH_SHORT).show();
+                }
             }
         });
     }

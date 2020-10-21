@@ -31,7 +31,7 @@ import com.google.firebase.database.ValueEventListener;
 public class HomePage extends AppCompatActivity {
 
     Button userProfile;
-    String user_name,user_username,user_email,user_phone,user_password;
+    String user_name,user_username,user_email,user_phone,user_password,user_uid;
     FloatingActionButton floatingAddButton, floatingProfileButton;
     TextView emptyMessage;
 
@@ -75,8 +75,9 @@ public class HomePage extends AppCompatActivity {
         user_email = sp.getString("email","");
         user_phone = sp.getString("phone","");
         user_password = sp.getString("password","");
-        checkDevicesExist(user_username);
-        ref = FirebaseDatabase.getInstance().getReference("Users").child(user_username).child("ProductsOwned");
+        user_uid = sp.getString("uid","");
+        checkDevicesExist(user_uid);
+        ref = FirebaseDatabase.getInstance().getReference("Users").child(user_uid).child("ProductsOwned");
 
         floatingProfileButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -98,6 +99,7 @@ public class HomePage extends AppCompatActivity {
                 Intent deviceIntent = new Intent(getApplicationContext(),AddDevice.class);
                 deviceIntent.putExtra("email",user_email);
                 deviceIntent.putExtra("username",user_username);
+                deviceIntent.putExtra("uid",user_uid);
 
                 startActivity(deviceIntent);
             }
