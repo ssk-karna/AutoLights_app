@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -21,6 +22,8 @@ import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -53,6 +56,9 @@ public class HomePage extends AppCompatActivity {
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        user_uid = user.getUid();
+        Log.d("TAG","The uid is" + user_uid);
 
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
@@ -75,9 +81,32 @@ public class HomePage extends AppCompatActivity {
         user_email = sp.getString("email","");
         user_phone = sp.getString("phone","");
         user_password = sp.getString("password","");
-        user_uid = sp.getString("uid","");
+//        user_uid = sp.getString("uid","");
+
         checkDevicesExist(user_uid);
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("Users");
+        Query checkUser = reference.equalTo(user_uid);
+//        reference.addListenerForSingleValueEvent(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot snapshot) {
+//                if (snapshot.exists()){
+//                    user_name = snapshot.child(user_uid).child("name").getValue(String.class);
+//                    user_username = snapshot.child(user_uid).child("username").getValue(String.class);
+//                    Log.d("TAG", "username is + "+user_username);
+//                    user_email = snapshot.child(user_uid).child("email").getValue(String.class);
+//                    user_phone = snapshot.child(user_uid).child("phone").getValue(String.class);
+//
+//                }
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError error) {
+//
+//            }
+//        });
         ref = FirebaseDatabase.getInstance().getReference("Users").child(user_uid).child("ProductsOwned");
+
+        Log.d("TAG","SHAredPREf uid username " + user_username);
 
         floatingProfileButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -88,7 +117,7 @@ public class HomePage extends AppCompatActivity {
                UserIntent.putExtra("username",user_username);
                UserIntent.putExtra("email",user_email);
                UserIntent.putExtra("phone",user_phone);
-               UserIntent.putExtra("password",user_password);
+               UserIntent.putExtra("uid",user_uid);
                 startActivity(UserIntent);
             }
         });
@@ -112,6 +141,8 @@ public class HomePage extends AppCompatActivity {
 
                  final String lastControlledBy = user_email;
                  final String name_username = user_username;
+
+                 Log.d("user name and emil in bindholder", user_email +" "+ user_username);
 
                  holder.devicename.setText(""+model.getnickname());
                  holder.deviceid.setText(""+model.getProductID());
@@ -256,17 +287,16 @@ public class HomePage extends AppCompatActivity {
     private void checkDevicesExist(String username){
 
         DatabaseReference dbref = FirebaseDatabase.getInstance().getReference().child("Users").child(username).child("ProductsOwned");
-        Query checkDevice = dbref.orderByChild("username").equalTo("null");
+        Query checkDevice = dbref.orderByChild("username").equalTo("0");
         checkDevice.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if(snapshot.exists()){
                     emptyMessage.setVisibility(View.VISIBLE);
-                    //emptyMessage.setVisibility(View.VISIBLE);
-                    //recyclerView.setVisibility(View.GONE);
+
                 }
                 else{
-                    //recyclerView.setVisibility(View.VISIBLE);
+
                     emptyMessage.setVisibility(View.GONE);
                 }
             }
@@ -279,4 +309,6 @@ public class HomePage extends AppCompatActivity {
 
 
     }
+
+
 }

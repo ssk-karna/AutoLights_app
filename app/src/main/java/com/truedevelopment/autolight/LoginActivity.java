@@ -7,6 +7,7 @@ import android.app.ActivityOptions;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.util.Pair;
 import android.view.View;
 import android.widget.Button;
@@ -111,13 +112,16 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     public void loginUser(View view){
-
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if(!validateUserName() | !validatePassword()){
             return;
         }
 
         else{
+            getUserDetails(user.getUid());
+            Log.d("TAG","uid in if + "+user.getUid());
             login();
+
         }
 
     }
@@ -127,30 +131,26 @@ public class LoginActivity extends AppCompatActivity {
         final String userEnteredUsername = mUserId.getEditText().getText().toString().trim();
         final String userEnteredPassword = mPassword.getEditText().getText().toString().trim();
 
+
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("Users");
 
         Query checkUser = reference.equalTo(uid);
 
-        checkUser.addListenerForSingleValueEvent(new ValueEventListener() {
+        Log.d("TAG","get USer function" + uid);
+
+        reference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (snapshot.exists()){
 
-                    mUserId.setError(null);
-                    mUserId.setErrorEnabled(false);
-
                     String passwordFromDB = snapshot.child(uid).child("password").getValue(String.class);
-
-                    if(passwordFromDB.equals(userEnteredPassword)){
-
-                        mPassword.setError(null);
-                        mPassword.setErrorEnabled(false);
 
                         SharedPreferences sp = getSharedPreferences("MyUserPrefs",MODE_PRIVATE);
                         SharedPreferences.Editor editor = sp.edit();
 
                         String nameFromDB = snapshot.child(uid).child("name").getValue(String.class);
                         String usernameFromDB = snapshot.child(uid).child("username").getValue(String.class);
+                        Log.d("TAG", "username is in login + "+usernameFromDB);
                         String emailFromDB = snapshot.child(uid).child("email").getValue(String.class);
                         String phoneFromDB = snapshot.child(uid).child("phone").getValue(String.class);
 
@@ -165,11 +165,7 @@ public class LoginActivity extends AppCompatActivity {
                         editor.commit();
 
                         startActivity(intent);
-                    }
-                    else{
-                        mPassword.setError("Wrong Password!");
-                        mPassword.requestFocus();
-                    }
+
                 }
             }
 
@@ -184,13 +180,12 @@ public class LoginActivity extends AppCompatActivity {
          String userEnteredUsername = mUserId.getEditText().getText().toString().trim();
          String userEnteredPassword = mPassword.getEditText().getText().toString().trim();
         // DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference().child("Users");
-         final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
         mAuth.signInWithEmailAndPassword(userEnteredUsername,userEnteredPassword).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if(task.isSuccessful()){
                     Toast.makeText(LoginActivity.this,"Login Successful",Toast.LENGTH_SHORT).show();
-                    getUserDetails(user.getUid());
                     Intent newIntent = new Intent(LoginActivity.this, HomePage.class);
                     startActivity(newIntent);
                 }else{

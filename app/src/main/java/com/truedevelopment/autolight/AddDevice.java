@@ -4,13 +4,17 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.material.textfield.TextInputLayout;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -32,17 +36,40 @@ public class AddDevice extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_device);
-        Intent deviceIntent = getIntent();
 
+        Intent deviceIntent = getIntent();
         email = deviceIntent.getStringExtra("email");
         user = deviceIntent.getStringExtra("username");
-        uid = deviceIntent.getStringExtra("uid");
+//        uid = deviceIntent.getStringExtra("uid");
+        FirebaseUser userAuth = FirebaseAuth.getInstance().getCurrentUser();
+        uid  = userAuth.getUid();
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("Users");
+        Query checkUser = reference.equalTo(uid);
+//        reference.addListenerForSingleValueEvent(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot snapshot) {
+//                if (snapshot.exists()){
+//                    //user_name = snapshot.child(uid).child("name").getValue(String.class);
+//                    user = snapshot.child(uid).child("username").getValue(String.class);
+//                    Log.d("TAG", "username is addDevice.java + "+user);
+//                    email = snapshot.child(uid).child("email").getValue(String.class);
+//                    Log.d("TAG", "email is addDevice.java + "+email);
+//                }
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError error) {
+//
+//            }
+//        });
+        Log.d("TAG", "the username in addDevice "+ user);
+        Log.d("TAG", "the email in addDevice "+ email);
+
         addDevice = findViewById(R.id.btnAdd);
         productID = findViewById(R.id.productId);
         productKey = findViewById(R.id.productKey);
         nickname = findViewById(R.id.nickname);
         usertv = findViewById(R.id.tvusername);
-
 
         reference_user = FirebaseDatabase.getInstance().getReference().child("Users");
         reference_devices = FirebaseDatabase.getInstance().getReference().child("devices");
@@ -205,5 +232,6 @@ public class AddDevice extends AppCompatActivity {
             }
         });
     }
+
 
 }
