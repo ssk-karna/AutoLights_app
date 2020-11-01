@@ -17,6 +17,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.AuthResult;
@@ -31,17 +33,19 @@ import com.google.firebase.database.ValueEventListener;
 
 public class LoginActivity extends AppCompatActivity {
 
-    Button callSignUp,login;
+    Button callSignUp,login,resend,forgot;
     TextView mWelcome, mSignIn;
     TextInputLayout mUserId, mPassword;
     ImageView logoImage;
     FirebaseAuth mAuth;
-
+    FirebaseUser muser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+        keepLogin();
 
         callSignUp = findViewById(R.id.btnSignUp);
         login = findViewById(R.id.btnLogin);
@@ -50,7 +54,10 @@ public class LoginActivity extends AppCompatActivity {
         mUserId = findViewById(R.id.username);
         mPassword = findViewById(R.id.password);
         logoImage = findViewById(R.id.logoImage);
+        resend = findViewById(R.id.btnResend);
+        forgot = findViewById(R.id.btnForgot);
         mAuth = FirebaseAuth.getInstance();
+        resend.setVisibility(View.GONE);
 
         callSignUp.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -112,14 +119,12 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     public void loginUser(View view){
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
         if(!validateUserName() | !validatePassword()){
             return;
         }
 
         else{
-            getUserDetails(user.getUid());
-            Log.d("TAG","uid in if + "+user.getUid());
             login();
 
         }
@@ -130,11 +135,7 @@ public class LoginActivity extends AppCompatActivity {
 
         final String userEnteredUsername = mUserId.getEditText().getText().toString().trim();
         final String userEnteredPassword = mPassword.getEditText().getText().toString().trim();
-
-
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("Users");
-
-        Query checkUser = reference.equalTo(uid);
 
         Log.d("TAG","get USer function" + uid);
 
@@ -154,8 +155,6 @@ public class LoginActivity extends AppCompatActivity {
                         String emailFromDB = snapshot.child(uid).child("email").getValue(String.class);
                         String phoneFromDB = snapshot.child(uid).child("phone").getValue(String.class);
 
-                        Intent intent = new Intent(getApplicationContext(),HomePage.class);
-
                         editor.putString("name",nameFromDB);
                         editor.putString("username",usernameFromDB);
                         editor.putString("email",emailFromDB);
@@ -164,7 +163,6 @@ public class LoginActivity extends AppCompatActivity {
                         editor.putString("uid",uid);
                         editor.commit();
 
-                        startActivity(intent);
 
                 }
             }
@@ -179,19 +177,56 @@ public class LoginActivity extends AppCompatActivity {
     private void login(){
          String userEnteredUsername = mUserId.getEditText().getText().toString().trim();
          String userEnteredPassword = mPassword.getEditText().getText().toString().trim();
-        // DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference().child("Users");
+
 
         mAuth.signInWithEmailAndPassword(userEnteredUsername,userEnteredPassword).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if(task.isSuccessful()){
-                    Toast.makeText(LoginActivity.this,"Login Successful",Toast.LENGTH_SHORT).show();
                     Intent newIntent = new Intent(LoginActivity.this, HomePage.class);
-                    startActivity(newIntent);
+                   final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                   if (!user.isEmailVerified()){
+                       resend.setVisibility(View.VISIBLE);
+                       resend.setVisibility(View.VISIBLE);
+                       Toast.makeText(LoginActivity.this,"Email is not Verified. Click resend to get verification link",Toast.LENGTH_LONG).show();
+                       resend.setOnClickListener(new View.OnClickListener() {
+                           @Override
+                           public void onClick(View v) {
+                               user.sendEmailVerification().addOnSuccessListener(new OnSuccessListener<Void>() {
+                                   @Override
+                                   public void onSuccess(Void aVoid) {
+                                       Toast.makeText(LoginActivity.this,"Verification Email has been Sent",Toast.LENGTH_LONG).show();
+                                   }
+                               }).addOnFailureListener(new OnFailureListener() {
+                                   @Override
+                                   public void onFailure(@NonNull Exception e) {
+                                       Toast.makeText(LoginActivity.this," Failed to send Verification Email "+e.getMessage(),Toast.LENGTH_LONG).show();
+                                   }
+                               });
+                           }
+                       });
+                   }else {
+                       getUserDetails(user.getUid());
+                       Toast.makeText(LoginActivity.this,"Login Successful",Toast.LENGTH_SHORT).show();
+                       Log.d("TAG", "uid in ifSuccessful + " + user.getUid());
+                       startActivity(newIntent);
+                   }
                 }else{
                     Toast.makeText(LoginActivity.this,"Error !"+task.getException().getMessage(),Toast.LENGTH_SHORT).show();
                 }
             }
         });
+    }
+
+    private void keepLogin(){
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
+        if(user != null){
+            Intent newIntent = new Intent(LoginActivity.this, HomePage.class);
+            startActivity(newIntent);
+        }
+        else{
+            mUserId.requestFocus();
+        }
     }
 }

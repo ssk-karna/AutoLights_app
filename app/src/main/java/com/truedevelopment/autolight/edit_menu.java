@@ -8,6 +8,8 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -34,9 +36,9 @@ ImageView confirmButton;
         confirmButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                FirebaseUser User= FirebaseAuth.getInstance().getCurrentUser();
                 String updatedName = updateName.getText().toString();
-
-                DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference().child("Users").child(username).child("ProductsOwned").child(productid);
+                DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference().child("Users").child(User.getUid()).child("ProductsOwned").child(productid);
                 dbRef.child("nickname").setValue(updatedName);
                 
             }

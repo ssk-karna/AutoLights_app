@@ -16,7 +16,7 @@ import com.google.firebase.database.FirebaseDatabase;
 
 public class UserProfile extends AppCompatActivity {
 
-    TextInputLayout email, fulllName, phone,password;
+    TextInputLayout email, fulllName, phone;
     TextView fullNameLabel, userNameLabel;
     String user_name,user_username,user_email,user_phone,user_password;
     Button update;
@@ -31,7 +31,6 @@ public class UserProfile extends AppCompatActivity {
         fulllName = findViewById(R.id.userFullName);
         email = findViewById(R.id.userEmail);
         phone = findViewById(R.id.userPhone);
-        password = findViewById(R.id.userPassword);
         fullNameLabel = findViewById(R.id.textFullName);
         userNameLabel = findViewById(R.id.textUsername);
         update = findViewById(R.id.btnUpdate);
@@ -52,25 +51,22 @@ public class UserProfile extends AppCompatActivity {
 
     private void showAllUserData() {
         SharedPreferences sp = getApplicationContext().getSharedPreferences("MyUserPrefs",MODE_PRIVATE);
-        //Intent UserIntent = getIntent();
          user_name = sp.getString("name","");
          user_username = sp.getString("username","");
          user_email = sp.getString("email","");
          user_phone = sp.getString("phone","");
-         user_password = sp.getString("password","");
 
       fullNameLabel.setText(user_name);
       userNameLabel.setText(user_username);
       fulllName.getEditText().setText(user_name);
       email.getEditText().setText(user_email);
       phone.getEditText().setText(user_phone);
-      password.getEditText().setText(user_password);
 
     }
 
     public void update(View view){
 
-        if(isNameChanged() || isPasswordChanged()){
+        if(isNameChanged()){
             Toast.makeText(this, "Data has been Updated", Toast.LENGTH_LONG).show();
         }
         else{
@@ -79,18 +75,7 @@ public class UserProfile extends AppCompatActivity {
 
     }
 
-    private boolean isPasswordChanged() {
 
-        if(!user_password.equals( password.getEditText().getText().toString())) {
-            user_password = password.getEditText().getText().toString();
-            reference.child(user_username).child("password").setValue(password.getEditText().getText().toString());
-            return true;
-        }
-            else{
-                return false;
-            }
-
-    }
 
 
     private boolean isNameChanged() {

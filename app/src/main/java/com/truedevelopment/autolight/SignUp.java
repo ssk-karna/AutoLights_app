@@ -14,6 +14,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.AuthResult;
@@ -202,28 +204,39 @@ public class SignUp extends AppCompatActivity {
         String phone = regPhone.getEditText().getText().toString();
          String password = regPassword.getEditText().getText().toString();
        final String username = regUserName.getEditText().getText().toString();
-        final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
 
         final UserHelperClass helperClass = new UserHelperClass(name,username,email,phone,password);
 
-        reference.child(username).setValue(helperClass);
-        reference.child(username).child("ProductsOwned").setValue("0");
+        //reference.child(username).setValue(helperClass);
+        //reference.child(username).child("ProductsOwned").setValue("0");
 
         mAuth.createUserWithEmailAndPassword(email,password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if(task.isSuccessful()){
-                    Toast.makeText(SignUp.this,"User Created",Toast.LENGTH_SHORT).show();
-                    Intent logInIntent = new Intent(SignUp.this,LoginActivity.class);
-                    reference.child(user.getUid()).setValue(helperClass);
-                    reference.child(user.getUid()).child("ProductsOwned").setValue("0");
-                    startActivity(logInIntent);
+                    final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                    user.sendEmailVerification().addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            Toast.makeText(SignUp.this,"Verification Email has been Sent",Toast.LENGTH_LONG).show();
+                            Intent logInIntent = new Intent(SignUp.this,LoginActivity.class);
+                            reference.child(user.getUid()).setValue(helperClass);
+                            reference.child(user.getUid()).child("ProductsOwned").setValue("0");
+                            startActivity(logInIntent);
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Toast.makeText(SignUp.this," Failed to send Verification Email "+e.getMessage(),Toast.LENGTH_LONG).show();
+                        }
+                    });
+
                 }else{
                     Toast.makeText(SignUp.this,"Error !"+task.getException().getMessage(),Toast.LENGTH_SHORT).show();
                 }
             }
         });
-
 
     }
 

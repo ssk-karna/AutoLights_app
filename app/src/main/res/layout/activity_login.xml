@@ -75,18 +75,38 @@
                 android:inputType="textPassword"/>
 
         </com.google.android.material.textfield.TextInputLayout>
-
-        <Button
-            android:id="@+id/btnForgot"
-            android:layout_width="200dp"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="right"
-            android:background="#00000000"
-            android:elevation="0dp"
-            android:text="Forgot Password?"
-            android:textColor="@color/colorPrimary"
-            android:layout_marginTop="5dp"
-            android:layout_marginBottom="5dp"/>
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/btnResend"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="left"
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="5dp"
+
+                android:background="#00000000"
+                android:elevation="0dp"
+                android:text="Resend"
+                android:textColor="@color/colorPrimary" />
+
+            <Button
+                android:id="@+id/btnForgot"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right|end"
+                android:layout_marginTop="5dp"
+                android:layout_marginRight="0dp"
+                android:layout_marginBottom="5dp"
+                android:background="#00000000"
+                android:elevation="0dp"
+                android:text="Forgot Password?"
+                android:textAlignment="textEnd"
+                android:textColor="@color/colorPrimary" />
+        </LinearLayout>
 
         <Button
             android:id="@+id/btnLogin"
