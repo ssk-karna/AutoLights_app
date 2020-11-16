@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:title="Profile"
+        android:id="@+id/menu_profile"/>
+    <item android:title="Reset Password"
+        android:id="@+id/menu_resetPassword"/>
+    <item android:title="About App"
+        android:id="@+id/menu_aboutApp"/>
+    <item android:title="Logout"
+        android:id="@+id/menu_logout"/>
+</menu>

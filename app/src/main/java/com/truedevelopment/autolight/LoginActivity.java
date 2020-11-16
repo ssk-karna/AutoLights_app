@@ -45,8 +45,6 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        keepLogin();
-
         callSignUp = findViewById(R.id.btnSignUp);
         login = findViewById(R.id.btnLogin);
         mWelcome = findViewById(R.id.welcomeText);
@@ -58,7 +56,7 @@ public class LoginActivity extends AppCompatActivity {
         forgot = findViewById(R.id.btnForgot);
         mAuth = FirebaseAuth.getInstance();
         resend.setVisibility(View.GONE);
-
+        keepLogin();
         callSignUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -218,7 +216,7 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
-    private void keepLogin(){
+    public void keepLogin(){
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
         if(user != null){
