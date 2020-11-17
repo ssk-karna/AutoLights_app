@@ -15,7 +15,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.PopupMenu;
+import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
@@ -116,7 +118,7 @@ public class HomePage extends AppCompatActivity {
          options = new FirebaseRecyclerOptions.Builder<Product>().setQuery(ref,Product.class).build();
          adapter = new FirebaseRecyclerAdapter<Product, theViewholder>(options) {
              @Override
-             protected void onBindViewHolder(@NonNull theViewholder holder, int position, @NonNull Product model) {
+             protected void onBindViewHolder(@NonNull final theViewholder holder, int position, @NonNull Product model) {
 
                  final String lastControlledBy = user_email;
                  final String name_username = user_username;
@@ -127,6 +129,7 @@ public class HomePage extends AppCompatActivity {
                  holder.deviceid.setText(""+model.getProductID());
 
                  final String productid = holder.deviceid.getText().toString();
+                 Log.d("TAG", "onBindViewHolder: productid is " + productid);
                  final String productname = holder.devicename.getText().toString();
                  final DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("devices").child(productid);
                  final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
@@ -144,6 +147,45 @@ public class HomePage extends AppCompatActivity {
                          ref.child("lastControlledBy").setValue(lastControlledBy);
                      }
                  });
+
+                 holder.aswitch.setOnClickListener(new View.OnClickListener() {
+                     @Override
+                     public void onClick(View v) {
+                         if(holder.aswitch.isChecked()){
+                             ref.child("LED_STATUS").setValue("ON");
+                             ref.child("lastControlledBy").setValue(lastControlledBy);
+                         }
+                         else
+                         {
+                             ref.child("LED_STATUS").setValue("OFF");
+                             ref.child("lastControlledBy").setValue(lastControlledBy);
+                         }
+                     }
+                 });
+
+                 Query checkStatus = ref.child("LED_STATUS");
+                 checkStatus.addValueEventListener(new ValueEventListener() {
+                     @Override
+                     public void onDataChange(@NonNull DataSnapshot snapshot) {
+                         String status;
+                         if(snapshot.exists()){
+                             status = snapshot.getValue(String.class);
+
+                             if(status.trim().equals("ON")){
+                                 holder.aswitch.setChecked(true);
+                             }else{
+                                 holder.aswitch.setChecked(false);
+                             }
+                         }
+                     }
+
+                     @Override
+                     public void onCancelled(@NonNull DatabaseError error) {
+
+                     }
+                 });
+
+
 
                  holder.popUpMenu.setOnClickListener(new View.OnClickListener() {
                      @Override
@@ -166,7 +208,8 @@ public class HomePage extends AppCompatActivity {
                                          break;
                                      }
                                          case R.id.menu_delete:
-                                         {  DatabaseReference productsRef = FirebaseDatabase.getInstance().getReference().child("Users").child(user.getUid()).child("ProductsOwned");
+                                         {
+                                             DatabaseReference productsRef = FirebaseDatabase.getInstance().getReference().child("Users").child(user.getUid()).child("ProductsOwned");
                                          Query checkDeviceList = productsRef.orderByChild("nickname");
                                          checkDeviceList.addValueEventListener(new ValueEventListener() {
                                              @Override
@@ -188,6 +231,8 @@ public class HomePage extends AppCompatActivity {
                                              public void onDataChange(@NonNull DataSnapshot snapshot) {
                                                  if (snapshot.exists()){
                                                      maxUserCount = (int) snapshot.getChildrenCount();
+                                                     Log.d("TAG", "onBindViewHolder: maxUser is " + maxUserCount);
+
                                                  }
                                              }
 
@@ -213,8 +258,9 @@ public class HomePage extends AppCompatActivity {
                                                      }
                                                  });
                                              }
+                                             Log.d("TAG", "onBindViewHolder: maxUserCount is " + maxUserCount);
                                              if(maxUserCount!=1) {
-                                                 userRef.child(user_username).removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                 userRef.child(user_uid).removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
                                                      @Override
                                                      public void onComplete(@NonNull Task<Void> task) {
 

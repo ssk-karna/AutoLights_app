@@ -144,10 +144,8 @@ public class AddDevice extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (snapshot.exists()){
-
                     productID.setError(null);
                     productID.setErrorEnabled(false);
-
 
                     String productKeyFromDB = snapshot.child(userEnteredProductID).child("productKey").getValue(String.class);
 
@@ -167,7 +165,6 @@ public class AddDevice extends AppCompatActivity {
                                 if (snapshot.exists()){
                                     maxProductCount = (int) snapshot.getChildrenCount();
                                 }
-
                             }
 
                             @Override
@@ -183,7 +180,7 @@ public class AddDevice extends AppCompatActivity {
                                     reference_user.child(userEnteredProductID).child("ProductID").setValue(userEnteredProductID);
                                     reference_user.child(userEnteredProductID).child("nickname").setValue(userEnteredNickname);
                                     Toast.makeText(AddDevice.this, "Device added", Toast.LENGTH_SHORT).show();
-                                    reference_devices.child(username).child("email").setValue(email);
+                                    reference_devices.child(uid).child("email").setValue(email);
                                 }
                                 else{
                                     Toast.makeText(AddDevice.this, "Device Already added", Toast.LENGTH_SHORT).show();

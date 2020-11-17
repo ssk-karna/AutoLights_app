@@ -49,6 +49,16 @@
             android:layout_weight="1"
             android:orientation="horizontal">
 
+            <Switch
+                android:id="@+id/power_switch"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textOff="off"
+                android:textOn="on"
+                android:checked="false"
+                 />
+
             <Button
                 android:id="@+id/btnON"
                 android:layout_width="wrap_content"
