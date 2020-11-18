@@ -1,15 +1,19 @@
 package com.truedevelopment.autolight;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -39,6 +43,7 @@ public class HomePage extends AppCompatActivity {
     String user_name,user_username,user_email,user_phone,user_password,user_uid;
     FloatingActionButton floatingAddButton, floatingProfileButton;
     TextView emptyMessage;
+    Toolbar toolbar;
 
    private FirebaseRecyclerOptions<Product> options;
    private FirebaseRecyclerAdapter<Product, theViewholder> adapter;
@@ -55,6 +60,8 @@ public class HomePage extends AppCompatActivity {
         floatingProfileButton = findViewById(R.id.floatingProfileButton);
         emptyMessage = findViewById(R.id.emptyMessage);
         recyclerView= findViewById(R.id.recview);
+        toolbar = findViewById(R.id.mtoolbar);
+        setSupportActionBar(toolbar);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         checkDevicesExist();
@@ -83,7 +90,6 @@ public class HomePage extends AppCompatActivity {
         user_email = sp.getString("email","");
         user_phone = sp.getString("phone","");
         user_password = sp.getString("password","");
-
 
               ref = FirebaseDatabase.getInstance().getReference("Users").child(user_uid).child("ProductsOwned");
 
@@ -184,8 +190,6 @@ public class HomePage extends AppCompatActivity {
 
                      }
                  });
-
-
 
                  holder.popUpMenu.setOnClickListener(new View.OnClickListener() {
                      @Override
@@ -298,6 +302,62 @@ public class HomePage extends AppCompatActivity {
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.settings_menu,menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+
+        switch (item.getItemId()){
+            case R.id.menu_profile: {
+                Intent UserIntent = new Intent(getApplicationContext(),UserProfile.class);
+
+                UserIntent.putExtra("name",user_name);
+                UserIntent.putExtra("username",user_username);
+                UserIntent.putExtra("email",user_email);
+                UserIntent.putExtra("phone",user_phone);
+                UserIntent.putExtra("uid",user_uid);
+                startActivity(UserIntent);
+                break;
+            }
+            case R.id.menu_logout: {
+                FirebaseAuth.getInstance().signOut();
+                finish();
+                startActivity(new Intent(this, LoginActivity.class));
+            }
+        }
+
+        return true;
+    }
+
+    @Override
+    public void onBackPressed() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+        builder.setMessage("Are you sure you want to Exit?")
+                .setCancelable(false)
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        HomePage.super.onBackPressed();
+                        finishAffinity();
+                    }
+                })
+                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                });
+
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
+
+    }
+
+    @Override
     protected void onStart() {
         super.onStart();
         adapter.startListening();
@@ -334,8 +394,5 @@ public class HomePage extends AppCompatActivity {
             }
         });
 
-
     }
-
-
 }

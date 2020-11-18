@@ -7,25 +7,48 @@
     android:orientation="vertical"
     tools:context=".HomePage">
 
-    <TextView
-        android:id="@+id/emptyMessage"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:fontFamily="@font/bevan"
-        android:text=""
-        android:textAlignment="center"
-        android:textColor="@color/colorPrimary"
-        android:layout_marginRight="20dp"
-        android:layout_marginLeft="20dp"
-        android:textSize="25sp" />
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recview"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginStart="10dp"
-        android:layout_marginBottom="10dp" />
+        android:orientation="vertical"
+        android:layout_marginBottom="10dp">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/mtoolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?attr/colorPrimary"
+            android:minHeight="?attr/actionBarSize"
+            android:theme="?attr/actionBarTheme" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:layout_marginTop="10dp">
+
+        <TextView
+            android:id="@+id/emptyMessage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:fontFamily="@font/bevan"
+            android:text=""
+            android:textAlignment="center"
+            android:textColor="@color/colorPrimary"
+            android:textSize="25sp" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="30dp"
+            android:layout_marginBottom="10dp" />
+    </LinearLayout>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/floatingAddButton"
