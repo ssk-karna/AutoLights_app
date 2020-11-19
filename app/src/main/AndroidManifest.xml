@@ -9,7 +9,8 @@
         android:roundIcon="@mipmap/launcher_icon_bulb_foreground"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".edit_menu"></activity>
+        <activity android:name=".ForgotPassword"></activity>
+        <activity android:name=".edit_menu" />
         <activity android:name=".AddDevice" />
         <activity android:name=".HomePage" />
         <activity android:name=".UserProfile" />
