@@ -231,7 +231,6 @@ public class SignUp extends AppCompatActivity {
                             Toast.makeText(SignUp.this," Failed to send Verification Email "+e.getMessage(),Toast.LENGTH_LONG).show();
                         }
                     });
-
                 }else{
                     Toast.makeText(SignUp.this,"Error !"+task.getException().getMessage(),Toast.LENGTH_SHORT).show();
                 }

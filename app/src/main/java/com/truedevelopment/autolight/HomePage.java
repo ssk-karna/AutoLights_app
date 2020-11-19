@@ -326,6 +326,11 @@ public class HomePage extends AppCompatActivity {
                 FirebaseAuth.getInstance().signOut();
                 finish();
                 startActivity(new Intent(this, LoginActivity.class));
+                break;
+            }
+            case R.id.menu_resetPassword: {
+                Intent intent = new Intent(HomePage.this, ForgotPassword.class);
+                startActivity(intent);
             }
         }
 

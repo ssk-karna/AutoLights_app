@@ -2,10 +2,15 @@
 <resources>
     <array name="preloaded_fonts" translatable="false">
         <item>@font/almendra_display</item>
+        <item>@font/architects_daughter</item>
         <item>@font/bangers</item>
         <item>@font/bevan</item>
         <item>@font/bungee</item>
         <item>@font/caveat_bold</item>
         <item>@font/delius_unicase_bold</item>
+        <item>@font/donegal_one</item>
+        <item>@font/fira_sans_light</item>
+        <item>@font/mukta_vaani_extralight</item>
+        <item>@font/salsa</item>
     </array>
 </resources>

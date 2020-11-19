@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".AboutApp">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="5dp"
+        android:fontFamily="@font/salsa"
+        android:text="Autolights is an android app developed to support IoT services.
+The app comes with features such as user registration, adding devices and then controlling.
+Here each switch when controlled on and off would update the status in database which
+when connected to a directs the status to the device. The whole idea is to add a remote
+control feature to all the switches at home for easy access and security.
+ For more details and code of the app visit https://github.com/ssk-karna/AutoLights_app .
+ To checkout developer visit https://www.linkedin.com/in/ssk-karna/.
+For any feedback drop a message at @ssk_karna on twitter."
+        android:textColor="#000000"
+        android:textSize="20sp"
+        android:textStyle="bold" />
+</LinearLayout>
